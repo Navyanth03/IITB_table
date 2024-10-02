@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemical Supplies</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="table">
+        <h1>Chemical Supplies</h1>
+        <div class="toolbar">
+            <button id="addRow">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="blue" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+              </button>
+            <button id="moveUp">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
+                </svg>                                   
+            </button>
+            <button id="moveDown">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
+                </svg>   
+            </button>
+            <button id="deleteRow">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="red" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                </svg>                  
+            </button>
+            <button id="refreshData">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="blue" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                </svg>  
+            </button>
+            <button id="saveData">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="blue" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+                </svg>                  
+            </button>
+        </div>
+        <table id="chemicalTable">
+            <thead>
+                <tr>
+                    <th>Select</th>
+                    <th class="chemical-id" onclick="sortTable(0)">ID</th>
+                    <th class="chemical-name" onclick="sortTable(1)">Chemical Name</th>
+                    <th class="chemical-vendor" onclick="sortTable(2)">Vendor</th>
+                    <th class="chemical-density" onclick="sortTable(3)">Density (g/m³)</th>
+                    <th class="chemical-viscosity" onclick="sortTable(4)">Viscosity (m²/s)</th>
+                    <th class="chemical-packaging" onclick="sortTable(5)">Packaging</th>
+                    <th class="chemical-packSize" onclick="sortTable(6)">Pack Size</th>
+                    <th class="chemical-unit" onclick="sortTable(7)">Unit</th>
+                    <th class="chemical-quantity" onclick="sortTable(8)">Quantity</th>                    
+                </tr>
+            </thead>
+            <tbody id="chemicalData">
+                <!-- Rows will be populated here -->
+            </tbody>
+        </table>
+    </div>
+
+    <div id="editForm" style="display:none;">
+        <h2>Edit Chemical</h2>
+        <form id="chemicalEditForm">
+            <label for="editId">ID:</label>
+            <input type="text" id="editId" readonly>
+            
+            <label for="editName">Chemical Name:</label>
+            <input type="text" id="editName">
+            
+            <label for="editVendor">Vendor:</label>
+            <input type="text" id="editVendor">
+            
+            <label for="editDensity">Density:</label>
+            <input type="number" id="editDensity">
+            
+            <label for="editViscosity">Viscosity:</label>
+            <input type="number" id="editViscosity">
+            
+            <label for="editPackaging">Packaging:</label>
+            <input type="text" id="editPackaging">
+            
+            <label for="editPackSize">Pack Size:</label>
+            <input type="number" id="editPackSize">
+            
+            <label for="editUnit">Unit:</label>
+            <input type="text" id="editUnit">
+            
+            <label for="editQuantity">Quantity:</label>
+            <input type="number" id="editQuantity">
+            
+            <div class="button-container">
+                <button type="button" onclick="saveEdit()">Save</button>
+                <button type="button" onclick="cancelEdit()">Cancel</button>
+            </div>
+        </form>
+    </div>
+    
+    
+    <script src="script.js"></script>
+</body>
+</html>
