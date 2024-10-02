@@ -15,15 +15,17 @@ let chemicals = [
     { id: 14, name: "Glycol Ether PM", vendor: "LG Chem", density: 6495.18, viscosity: 72.12, packaging: "Bag", packSize: "250.00", unit: "kg", quantity: 8749.54 }  
 ];
 
-function populateTable() {
+function populateTable(index) {
     const tableBody = document.getElementById("chemicalData");
     tableBody.innerHTML = '';
     chemicals.forEach((chemical,index) => {
         const row = document.createElement("tr");
         row.innerHTML = `
-            <svg id="mySvg-${index}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6" onclick="changeColor(${index})">
-                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-            </svg>
+            <td>
+                <svg id="mySvg-${chemical.id}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6" onclick="changeColor(${chemical.id})">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                </svg>
+            </td>
             <td class="chemical-id">${chemical.id}</td>
             <td class="chemical-name">${chemical.name}</td>
             <td class="chemical-vendor">${chemical.vendor}</td>
@@ -45,26 +47,33 @@ function populateTable() {
                     ${chemical.quantity}
                 </div>
             </td>
-            <td><button class="edit-btn" onclick="editRow(${index})">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-            </svg>
-        </button></td>
+            <td>
+                <button class="edit-btn" onclick="editRow(${index})">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                    </svg>
+                </button>
+            </td>
         `;
         tableBody.appendChild(row);
     });
+    if(index!==-1){
+        const svg=document.getElementById(`mySvg-${index}`);
+        svg.style.stroke="blue";
+    }
 }
 
 let currentSelectionIndex=-1;
 
 function changeColor(index) {
-    if(currentSelectionIndex>=0){
+    if(currentSelectionIndex>=0 && currentSelectionIndex!==index){
         const oldSvg=document.getElementById(`mySvg-${currentSelectionIndex}`);
-        oldSvg.style.stroke = oldSvg.style.stroke === "blue" ? "currentColor" : "blue"; // Toggle between light blue and default color
+        oldSvg.style.stroke = "currentColor";
     }
-    currentSelectionIndex=index;
+    if(currentSelectionIndex===index)currentSelectionIndex=-1;
+    else currentSelectionIndex=index;
     const svg = document.getElementById(`mySvg-${index}`);
-    svg.style.stroke = svg.style.stroke === "blue" ? "currentColor" : "blue"; // Toggle between light blue and default color
+    svg.style.stroke =svg.style.stroke==="blue"?"currentColor":"blue";
 }
 
 function sortTable(n) {
@@ -100,7 +109,7 @@ function sortTable(n) {
     }
 }
 
-document.addEventListener("DOMContentLoaded", populateTable);
+document.addEventListener("DOMContentLoaded", ()=>populateTable(-1));
 
 document.getElementById("addRow").addEventListener("click", () => {
     chemicals.push({
@@ -114,40 +123,40 @@ document.getElementById("addRow").addEventListener("click", () => {
         unit: "kg",
         quantity: 500
     });
-    populateTable();
+    populateTable(currentSelectionIndex);
 });
 
 document.getElementById("deleteRow").addEventListener("click", () => {
-    if(currentSelectionIndex!=-1){
-        chemicals=chemicals.filter((chemical)=>chemical.id!=currentSelectionIndex);
-        populateTable();
+    if(currentSelectionIndex){
+        chemicals=chemicals.filter((chemical)=>chemical.id!==currentSelectionIndex);
+        currentSelectionIndex=-1;
+        populateTable(-1);
     }
 });
 
 document.getElementById("moveUp").addEventListener("click",()=>{
-    if(currentSelectionIndex<=0)return;
-    const temp=chemicals[currentSelectionIndex];
-    chemicals[currentSelectionIndex]=chemicals[currentSelectionIndex-1];
-    chemicals[currentSelectionIndex-1]=temp;
-    currentSelectionIndex--;
-    populateTable();
+    const index=chemicals.findIndex((chemical)=>chemical.id===currentSelectionIndex);
+    if(index<=0)return;
+    const temp=chemicals[index];
+    chemicals[index]=chemicals[index-1];
+    chemicals[index-1]=temp;
+    populateTable(currentSelectionIndex);
 })
 
 document.getElementById("moveDown").addEventListener("click",()=>{
-    if(currentSelectionIndex===chemicals.length-1 || currentSelectionIndex===-1)return;
-    const temp=chemicals[currentSelectionIndex];
-    chemicals[currentSelectionIndex]=chemicals[currentSelectionIndex+1];
-    chemicals[currentSelectionIndex+1]=temp;
-    currentSelectionIndex++;
-    populateTable();
+    const index=chemicals.findIndex((chemical)=>chemical.id===currentSelectionIndex);
+    if(index===chemicals.length-1 || index===-1)return;
+    const temp=chemicals[index];
+    chemicals[index]=chemicals[index+1];
+    chemicals[index+1]=temp;
+    populateTable(currentSelectionIndex);
 })
 
 document.getElementById("refreshData").addEventListener("click",()=>{
     chemicals.sort((a,b)=>a.id-b.id);
-    populateTable();
+    populateTable(currentSelectionIndex);
 })
 
-// Move up and down buttons logic can be similar, shifting array elements.
 let currentEditIndex = null;
 
 function editRow(index) {
@@ -155,7 +164,6 @@ function editRow(index) {
     currentEditIndex = index;
     const chemical = chemicals[index];
     
-    // Populate the form with current data
     document.getElementById("editId").value = chemical.id;
     document.getElementById("editName").value = chemical.name;
     document.getElementById("editVendor").value = chemical.vendor;
@@ -166,12 +174,10 @@ function editRow(index) {
     document.getElementById("editUnit").value = chemical.unit;
     document.getElementById("editQuantity").value = chemical.quantity;
     
-    // Show the form
     document.getElementById("editForm").style.display = "block";
 }
 
 function saveEdit() {
-    // Save updated data to the array
     chemicals[currentEditIndex] = {
         id: document.getElementById("editId").value,
         name: document.getElementById("editName").value,
@@ -183,11 +189,9 @@ function saveEdit() {
         unit: document.getElementById("editUnit").value,
         quantity: parseFloat(document.getElementById("editQuantity").value)
     };
-    
-    // Hide the form and refresh the table
     document.getElementById("editForm").style.display = "none";
     document.getElementById("table").style.opacity="1";
-    populateTable();
+    populateTable(currentSelectionIndex);
 }
 
 function cancelEdit() {
